@@ -32,6 +32,62 @@ let exerciceArray = [];
 
 class Exercice {
 
+  constructor() {
+    this.index = 0;
+    this.minutes = exerciceArray[this.index].min;
+    this.seconds = 0;
+
+  }
+
+  //? !fonction qui gère le décompte
+  updateCountdown() {
+
+    //? affiche un 0 devant les chiffres si inférieur à 10
+    this.seconds = this.seconds < 10 ? `0${this.seconds}` : this.seconds;
+
+    setTimeout(() => {
+      if (this.minutes === 0 && this.seconds === "00") {
+        this.index++;
+        this.ring();
+        if(this.index < exerciceArray.length)
+        {
+          this.minutes = exerciceArray[this.index].min;
+          this.seconds = 0;
+          this.updateCountdown();
+        }
+        else
+        {
+          page.finish();
+        }
+
+      }
+      else if (this.seconds === "00") {
+        this.minutes--;
+        this.seconds = 59;
+        this.updateCountdown();
+      } 
+      else
+      {
+        this.seconds--;
+        this.updateCountdown();
+      }
+
+    }, 1000);
+
+    return (main.innerHTML = `
+    <div class="exercice-container">
+      <p>${this.minutes} : ${this.seconds} </p>
+      <img src="./img/${exerciceArray[this.index].pic}.png" alt="exercice ${exerciceArray[this.index].pic}">
+      <div> ${this.index + 1} / ${exerciceArray.length} </div>
+
+    </div>
+    `);
+  }
+  //? !fonction qui gère le son
+  ring() {
+    const audio = new Audio("./ring.mp3");
+    audio.play();
+  }
 }
 
 const utils = {
@@ -95,7 +151,6 @@ const utils = {
         exerciceArray = newArr;
         page.lobby();
         this.store();
-
       });
     });
   },
@@ -152,21 +207,21 @@ const page = {
     reboot.addEventListener("click", () => {
       utils.reboot();
     });
-
     start.addEventListener("click", () => {
       this.routine();
     }
     );
-
   },
 
   //? !affichage de la routine
   routine : function() {
+    const exercice = new Exercice();
+
     utils.pageContent(
       "Routine",
-      "Exercice avec timer",
+      exercice.updateCountdown(),
       null
-    )
+    );
   },
 
   //? !affichage de la fin des exercices
@@ -176,8 +231,9 @@ const page = {
       "<button id='start'>Recommencer <i class='fas fa-undo'></i></button>",
       "<button id='reboot' class='btn-reboot'>Réinitialiser </button>"
     )
+
+    start.addEventListener("click", () => {this.routine();});
+    reboot.addEventListener("click", () => {utils.reboot();});
   }
-
 }
-
 page.lobby();
