@@ -1,12 +1,11 @@
 class Question {
-  constructor(text,choices,answer)
-  {
+  constructor(text, choices, answer) {
     this.text = text;
     this.choices = choices;
     this.answer = answer;
   }
-  isCorrectAnswer(choice){
-    return  choice === this.answer;
+  isCorrectAnswer(choice) {
+    return choice === this.answer;
   }
 }
 
@@ -59,7 +58,7 @@ class Quiz {
 
 //? Affichage des questions du quiz
 const display = {
-  
+
   elementShown: function (id, text) {
     let element = document.getElementById(id);
     element.innerHTML = text;
@@ -94,32 +93,23 @@ const display = {
     <h3>Votre score est de : ${quiz.score} / ${quiz.questions.length}</h3>`;
     this.elementShown("quiz", endQuizHTML);
   }
-
-
-  };
-
-
+};
 
 
 //? Logique du jeu
 quizApp = () => {
-  if(quiz.hasEnded()){
+  if (quiz.hasEnded()) {
     //! Afficher les résultats
     display.endQuiz();
 
-  }
-  else{
+  } else {
     //! Afficher la question suivante
     display.question();
     display.choices();
     display.progress();
-
   }
-
 }
 
 //? Création d'un quiz
 let quiz = new Quiz(questions);
 quizApp();
-
-
